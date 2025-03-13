@@ -39,6 +39,24 @@ def rotateArray(arr, k):
     reverseArrayHelper(arr, k, n - 1)
     return arr
 
+def rotateArray_cyclic(arr, k):
+    n = len(arr)
+    k %= n
+    count = 0  # Считаем количество перемещённых элементов
+    start = 0
+    while count < n:
+        current = start
+        prev = arr[start]
+        while True:
+            next_idx = (current + k) % n
+            arr[next_idx], prev = prev, arr[next_idx]
+            current = next_idx
+            count += 1
+            if start == current:  # Цикл замкнулся
+                break
+        start += 1
+    return arr
+
 def merge_sorted_arrays(arr1, arr2):
     merged = []
     i, j = 0, 0
@@ -135,6 +153,14 @@ class TestAlgorithms(unittest.TestCase):
         # Если k больше длины массива (используется операция mod)
         self.assertEqual(rotateArray([1, 2, 3, 4], 5), [4, 1, 2, 3])
 
+        self.assertEqual(rotateArray_cyclic([1, 2, 3, 4, 5, 6, 7], 3), [5, 6, 7, 1, 2, 3, 4])
+        # Сдвиг на 0 должен вернуть исходный массив
+        self.assertEqual(rotateArray_cyclic([1, 2, 3], 0), [1, 2, 3])
+        # Сдвиг на длину массива (или кратное длине) — массив не меняется
+        self.assertEqual(rotateArray_cyclic([1, 2, 3, 4], 4), [1, 2, 3, 4])
+        # Если k больше длины массива (используется операция mod)
+        self.assertEqual(rotateArray_cyclic([1, 2, 3, 4], 5), [4, 1, 2, 3])
+
     def test_merge_sorted_arrays(self):
         self.assertEqual(merge_sorted_arrays([1, 3, 5], [2, 4, 6]), [1, 2, 3, 4, 5, 6])
         self.assertEqual(merge_sorted_arrays([], [1, 2]), [1, 2])
@@ -142,8 +168,10 @@ class TestAlgorithms(unittest.TestCase):
         self.assertEqual(merge_sorted_arrays([1, 3], [2, 4, 5, 6]), [1, 2, 3, 4, 5, 6])
 
     def test_merge(self):
+        # arr1 имеет достаточный запас (последние элементы — 0)
         self.assertEqual(merge([1, 3, 5, 0, 0, 0], [2, 4, 6]), [1, 2, 3, 4, 5, 6])
         self.assertEqual(merge([2, 0], [1]), [1, 2])
+        # Дополнительный тест: если в arr1 уже есть ноль как действительное число
         self.assertEqual(merge([1, 2, 3, 0, 0], [0, 4]), [0, 1, 2, 3, 4])
 
     def test_sort_binary_array(self):
@@ -178,8 +206,8 @@ def benchmark():
     print("\n=== БЕНЧМАРКИ ===")
 
     setup_code = """
-from __main__ import (twoSum, reverseArray, rotateArray, merge_sorted_arrays, 
-sort_binary_array, sortColors, evenFirst, moveZerosToEnd)
+from __main__ import (twoSum, reverseArray, rotateArray, rotateArray_cyclic, merge_sorted_arrays, 
+merge, sort_binary_array, sortColors, evenFirst, moveZerosToEnd)
 import random
 arr = list(range(10000))
 target = arr[5000] + arr[5001]
@@ -189,8 +217,10 @@ arr2 = list(range(5000, 10000))
     tests = [
         ("twoSum(arr, target)", "Поиск двух чисел в отсортированном массиве"),
         ("reverseArray(arr)", "Разворот массива"),
-        ("rotateArray(arr, 1234)", "Циклический сдвиг массива"),
+        ("rotateArray(arr, 1234)", "Развернуть часть массива"),
+        ("rotateArray_cyclic(arr, 1234)", "Развернуть часть массива (второй способ)"),
         ("merge_sorted_arrays(arr, arr2)", "Слияние отсортированных массивов"),
+        ("merge(arr, arr2)", "Слияние отсортированных массивов (второй способ)"),
         ("sort_binary_array([random.choice([0, 1]) for _ in range(10000)])", "Сортировка бинарного массива"),
         ("sortColors([random.choice([0, 1, 2]) for _ in range(10000)])", "Сортировка массива цветов"),
         ("evenFirst([random.randint(1, 100) for _ in range(10000)])", "Чётные числа в начало массива"),
