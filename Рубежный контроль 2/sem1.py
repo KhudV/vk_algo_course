@@ -107,9 +107,9 @@ class TestSeminarAlgorithms(unittest.TestCase):
         self.assertEqual(binary_search_sqrt(10), 3)
 
     def test_copy_time(self):
-        self.assertEqual(copy_time(5, 1, 2), 5)       # 5 копий, x=1, y=2
+        self.assertEqual(copy_time(4, 1, 3), 4)       # 5 копий, x=1, y=2
         self.assertEqual(copy_time(1, 3, 5), 3)         # для 1 копии возвращаем min(x,y)
-        self.assertEqual(copy_time(10, 1, 1), 10)
+        self.assertEqual(copy_time(10, 1, 1), 6)
 
     def test_feed_animals(self):
         self.assertEqual(feed_animals([3, 4, 7], [8, 1, 2]), 1)
@@ -126,8 +126,8 @@ class TestSeminarAlgorithms(unittest.TestCase):
         self.assertEqual(extra_letter("bbb", "bbbb"), "b")
 
     def test_two_sum(self):
-        self.assertEqual(two_sum([1, 2, 3, 4, 5, 6, 7], 9), [1, 6])   # 2 (индекс 1) + 7 (индекс 6)
-        self.assertEqual(two_sum([1, 3, 5, 7], 8), [0, 3])               # 1 (индекс 0) + 7 (индекс 3)
+        self.assertEqual(two_sum([1, 2, 3, 4, 5, 6, 7], 12), [4, 6])
+        self.assertEqual(two_sum([3, 2, 4], 6), [1, 2])
         self.assertEqual(two_sum([1, 2, 3, 4, 5], 100), [])
         self.assertEqual(two_sum([], 10), [])
 
